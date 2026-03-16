@@ -407,6 +407,12 @@ body {
 }
 .clear-btn:hover { color: var(--red); border-color: rgba(224,112,112,0.35); }
 
+.model-pill select option {
+  background: #1f2433;
+  color: #e8e4dc;
+  font-size: 12px;
+}
+
 * { scrollbar-width: thin; scrollbar-color: var(--surface3) transparent; }
 </style>
 </head>
@@ -422,7 +428,18 @@ body {
     </div>
   </div>
   <div class="topbar-right">
-    <div class="model-pill">Model: <strong>LLaMA 3 70B</strong>&nbsp;· Groq</div>
+    <div class="model-pill">
+      Model:&nbsp;
+      <select id="model-select" onchange="onModelChange()" style="background:transparent;border:none;outline:none;color:var(--accent);font-family:'Outfit',sans-serif;font-size:11px;font-weight:500;cursor:pointer;">
+        <option value="llama-3.3-70b-versatile"  selected>LLaMA 3.3 70B ★</option>
+        <option value="llama-3.1-70b-versatile">LLaMA 3.1 70B</option>
+        <option value="llama-3.1-8b-instant">LLaMA 3.1 8B (Fast)</option>
+        <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+        <option value="gemma2-9b-it">Gemma 2 9B</option>
+        <option value="custom">Custom model ID…</option>
+      </select>
+      &nbsp;· Groq
+    </div>
     <div class="server-pill" id="srv-pill">
       <div class="s-dot"></div>
       <span id="srv-txt">Connecting…</span>
@@ -447,6 +464,18 @@ body {
         <div class="key-hint">
           Get your free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a><br>
           Free tier · No credit card needed
+        </div>
+        <!-- Custom model input (shown only when Custom is selected) -->
+        <div id="custom-model-wrap" style="display:none;margin-top:8px;">
+          <div class="key-input-wrap">
+            <input type="text" id="custom-model-input" placeholder="e.g. llama-3.3-70b-versatile"
+              autocomplete="off" spellcheck="false"
+              style="font-size:11.5px;"
+              oninput="updateCustomModel()"/>
+          </div>
+          <div class="key-hint">
+            Find model IDs at <a href="https://console.groq.com/docs/models" target="_blank">console.groq.com/docs/models</a>
+          </div>
         </div>
       </div>
 
@@ -504,7 +533,7 @@ body {
       <div class="welcome" id="welcome">
         <span class="welcome-glyph">🧠</span>
         <h2>Psychology Book AI</h2>
-        <div class="powered-by">Powered by <strong>LLaMA 3 70B</strong> via Groq · Free & Open Source</div>
+        <div class="powered-by">Powered by <strong>LLaMA 3.3 70B</strong> via Groq · Free & Open Source</div>
         <p>Upload your psychology books, then ask any question.<br>
         Every answer is <strong style="color:var(--accent);">strictly grounded</strong> in your uploaded texts — no hallucination, no external knowledge.</p>
         <div class="suggestions">
@@ -544,7 +573,26 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 // ── State ──────────────────────────────────────────────────────────────────────
-const S = { books: [], history: [], loading: false, groqKey: '', serverOk: false };
+const S = { books: [], history: [], loading: false, groqKey: '', serverOk: false, model: 'llama-3.3-70b-versatile' };
+
+function getModel() { return S.model; }
+
+function onModelChange() {
+  const sel = document.getElementById('model-select').value;
+  const wrap = document.getElementById('custom-model-wrap');
+  if (sel === 'custom') {
+    wrap.style.display = 'block';
+    S.model = document.getElementById('custom-model-input').value.trim() || 'llama-3.3-70b-versatile';
+  } else {
+    wrap.style.display = 'none';
+    S.model = sel;
+  }
+}
+
+function updateCustomModel() {
+  const val = document.getElementById('custom-model-input').value.trim();
+  S.model = val || 'llama-3.3-70b-versatile';
+}
 
 // ── Server health check ────────────────────────────────────────────────────────
 async function checkServer() {
@@ -735,7 +783,7 @@ function clearChat() {
   w.innerHTML=`
     <span class="welcome-glyph">🧠</span>
     <h2>Psychology Book AI</h2>
-    <div class="powered-by">Powered by <strong>LLaMA 3 70B</strong> via Groq · Free & Open Source</div>
+    <div class="powered-by">Powered by <strong>LLaMA 3.3 70B</strong> via Groq · Free & Open Source</div>
     <p>Upload your psychology books, then ask any question.<br>
     Every answer is <strong style="color:var(--accent);">strictly grounded</strong> in your uploaded texts — no hallucination.</p>
     <div class="suggestions">
@@ -819,7 +867,7 @@ ${ctx}
         method: 'POST',
         headers: {'Content-Type':'application/json','Authorization':`Bearer ${key}`},
         body: JSON.stringify({
-          model: 'llama3-70b-8192',
+          model: getModel(),
           max_tokens: 1500,
           temperature: 0.1,
           messages

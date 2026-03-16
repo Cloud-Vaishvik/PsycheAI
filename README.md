@@ -1,7 +1,7 @@
 # 🧠 PsycheAI — Psychology Book Assistant
 
 A generative AI assistant that answers questions **strictly from your uploaded psychology PDFs**.  
-Powered by **LLaMA 3 70B** via [Groq](https://console.groq.com) — free and open source.
+Powered by **LLaMA 3.3 70B** via [Groq](https://console.groq.com) — free and open source.
 
 🔗 **Live Demo:** `https://YOUR_USERNAME.github.io/psycheai`
 
@@ -12,7 +12,7 @@ Powered by **LLaMA 3 70B** via [Groq](https://console.groq.com) — free and ope
 - 📚 Upload any psychology PDF books
 - 🔍 AI answers **only** from your uploaded texts — zero hallucination
 - ❌ Returns **"No data found"** if topic is absent from books
-- 🆓 Uses Groq's free API (LLaMA 3 70B)
+- 🆓 Uses Groq's free API (LLaMA 3.3 70B)
 - ⚡ No backend needed — runs entirely in the browser
 
 ---
@@ -40,7 +40,7 @@ Powered by **LLaMA 3 70B** via [Groq](https://console.groq.com) — free and ope
 
 - Vanilla HTML / CSS / JavaScript (zero dependencies)
 - [PDF.js](https://mozilla.github.io/pdf.js/) for PDF text extraction
-- [Groq API](https://console.groq.com) — LLaMA 3 70B (free tier)
+- [Groq API](https://console.groq.com) — LLaMA 3.3 70B (free tier)
 
 ---
 
